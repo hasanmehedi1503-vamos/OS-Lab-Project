@@ -1,60 +1,68 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
 #include "fcfs.h"
 
 using namespace std;
 
 void fcfs(vector<Process>& patients)
 {
-    // Sort patients according to Arrival Time
-    sort(patients.begin(), patients.end(),
-         [](Process a, Process b)
-         {
-             return a.arrivalTime < b.arrivalTime;
-         });
+    if (patients.empty())
+    {
+        cout << "\nNo patients available!\n";
+        return;
+    }
+
+    // Sort according to Arrival Time
+    stable_sort(patients.begin(), patients.end(),
+        [](const Process& a, const Process& b)
+        {
+            return a.arrivalTime < b.arrivalTime;
+        });
 
     int currentTime = 0;
 
     double totalWaitingTime = 0;
     double totalTurnaroundTime = 0;
+    double totalResponseTime = 0;
 
     cout << "\n========== FCFS SCHEDULING ==========\n";
 
-    cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
+    cout << "\nPID\tAT\tBT\tST\tCT\tTAT\tWT\tRT\n";
 
     for (auto &p : patients)
     {
-        // Find starting time
         int startTime = max(currentTime, p.arrivalTime);
 
         p.firstStartTime = startTime;
 
-        // Calculate Completion Time
         p.completionTime = startTime + p.burstTime;
 
-        // Calculate Turnaround Time
-        p.turnaroundTime = p.completionTime - p.arrivalTime;
+        p.turnaroundTime =
+            p.completionTime - p.arrivalTime;
 
-        // Calculate Waiting Time
-        p.waitingTime = p.turnaroundTime - p.burstTime;
+        p.waitingTime =
+            p.turnaroundTime - p.burstTime;
 
-        // Calculate Response Time
-        p.responseTime = startTime - p.arrivalTime;
+        p.responseTime =
+            startTime - p.arrivalTime;
 
-        // Update current time
+        p.remainingTime = 0;
+
         currentTime = p.completionTime;
 
         totalWaitingTime += p.waitingTime;
         totalTurnaroundTime += p.turnaroundTime;
+        totalResponseTime += p.responseTime;
 
         cout << p.pid << "\t"
              << p.arrivalTime << "\t"
              << p.burstTime << "\t"
+             << startTime << "\t"
              << p.completionTime << "\t"
              << p.turnaroundTime << "\t"
-             << p.waitingTime << endl;
+             << p.waitingTime << "\t"
+             << p.responseTime << endl;
     }
 
     cout << "\nAverage Waiting Time: "
@@ -62,6 +70,9 @@ void fcfs(vector<Process>& patients)
 
     cout << "\nAverage Turnaround Time: "
          << totalTurnaroundTime / patients.size();
+
+    cout << "\nAverage Response Time: "
+         << totalResponseTime / patients.size();
 
     cout << "\n\nFCFS Scheduling Completed!\n";
 }
