@@ -1,11 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <set>
+
 #include "patient/patient.h"
 #include "algorithms/fcfs.h"
 #include "algorithms/sjf.h"
 #include "algorithms/priority.h"
 #include "algorithms/roundrobin.h"
+#include "algorithms/srtf.h"
+#include <iomanip>
+
 
 
 using namespace std;
@@ -104,9 +108,12 @@ int main()
 vector<Process> sjfPatients = patients;
 vector<Process> priorityPatients = patients;
 vector<Process> rrPatients = patients;
+vector<Process> srtfPatients = patients;
 
 fcfs(fcfsPatients);
+
 sjf(sjfPatients);
+
 priorityScheduling(priorityPatients);
 
 int quantum;
@@ -122,6 +129,57 @@ if (cin.fail() || quantum <= 0)
 
 roundRobin(rrPatients, quantum);
 
+srtf(srtfPatients);
+// Performance Comparison
+
+cout << "\n\n========== SCHEDULING PERFORMANCE COMPARISON ==========\n";
+
+cout << left
+     << setw(15) << "Algorithm"
+     << setw(15) << "Avg WT"
+     << setw(15) << "Avg TAT"
+     << setw(15) << "Avg RT" << endl;
+
+cout << "------------------------------------------------------------\n";
+
+// Function to calculate average metrics
+
+auto showPerformance = [](string name, vector<Process>& data)
+{
+    double totalWT = 0;
+    double totalTAT = 0;
+    double totalRT = 0;
+
+    for (const auto &p : data)
+    {
+        totalWT += p.waitingTime;
+        totalTAT += p.turnaroundTime;
+        totalRT += p.responseTime;
+    }
+
+    int n = data.size();
+
+    cout << left
+         << setw(15) << name
+         << setw(15) << fixed << setprecision(2) << totalWT / n
+         << setw(15) << totalTAT / n
+         << setw(15) << totalRT / n
+         << endl;
+};
+
+// Display all algorithm results
+
+showPerformance("FCFS", fcfsPatients);
+
+showPerformance("SJF", sjfPatients);
+
+showPerformance("Priority", priorityPatients);
+
+showPerformance("Round Robin", rrPatients);
+
+showPerformance("SRTF", srtfPatients);
+
+cout << "============================================================\n";
 return 0;
     return 0;
 }
