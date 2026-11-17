@@ -4,6 +4,8 @@
 #include "patient/patient.h"
 #include "algorithms/fcfs.h"
 #include "algorithms/sjf.h"
+#include "algorithms/priority.h"
+
 using namespace std;
 
 int main()
@@ -98,9 +100,10 @@ int main()
     cout << "\nPatient information saved successfully!\n";
      vector<Process> fcfsPatients = patients;
 vector<Process> sjfPatients = patients;
+vector<Process> priorityPatients = patients;
 
 fcfs(fcfsPatients);
-
 sjf(sjfPatients);
+priorityScheduling(priorityPatients);
     return 0;
 }
