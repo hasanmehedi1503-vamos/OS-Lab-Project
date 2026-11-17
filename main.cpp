@@ -3,7 +3,7 @@
 #include <set>
 #include "patient/patient.h"
 #include "algorithms/fcfs.h"
-
+#include "algorithms/sjf.h"
 using namespace std;
 
 int main()
@@ -96,6 +96,11 @@ int main()
     }
 
     cout << "\nPatient information saved successfully!\n";
-     fcfs(patients);
+     vector<Process> fcfsPatients = patients;
+vector<Process> sjfPatients = patients;
+
+fcfs(fcfsPatients);
+
+sjf(sjfPatients);
     return 0;
 }
