@@ -5,6 +5,8 @@
 #include "algorithms/fcfs.h"
 #include "algorithms/sjf.h"
 #include "algorithms/priority.h"
+#include "algorithms/roundrobin.h"
+
 
 using namespace std;
 
@@ -101,9 +103,25 @@ int main()
      vector<Process> fcfsPatients = patients;
 vector<Process> sjfPatients = patients;
 vector<Process> priorityPatients = patients;
+vector<Process> rrPatients = patients;
 
 fcfs(fcfsPatients);
 sjf(sjfPatients);
 priorityScheduling(priorityPatients);
+
+int quantum;
+
+cout << "\nEnter Time Quantum for Round Robin: ";
+cin >> quantum;
+
+if (cin.fail() || quantum <= 0)
+{
+    cout << "Invalid Time Quantum!\n";
+    return 0;
+}
+
+roundRobin(rrPatients, quantum);
+
+return 0;
     return 0;
 }
