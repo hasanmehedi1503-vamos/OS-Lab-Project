@@ -180,6 +180,124 @@ showPerformance("Round Robin", rrPatients);
 showPerformance("SRTF", srtfPatients);
 
 cout << "============================================================\n";
+
+// Best Scheduling Algorithm Detection
+
+cout << "\n\n========== BEST SCHEDULING ALGORITHM ==========\n";
+
+struct Performance
+{
+    string name;
+    double avgWT;
+    double avgTAT;
+    double avgRT;
+};
+
+auto calculatePerformance = [](string name, vector<Process>& data)
+{
+    Performance result;
+
+    double totalWT = 0;
+    double totalTAT = 0;
+    double totalRT = 0;
+
+    for (const auto &p : data)
+    {
+        totalWT += p.waitingTime;
+        totalTAT += p.turnaroundTime;
+        totalRT += p.responseTime;
+    }
+
+    result.name = name;
+    result.avgWT = totalWT / data.size();
+    result.avgTAT = totalTAT / data.size();
+    result.avgRT = totalRT / data.size();
+
+    return result;
+};
+
+vector<Performance> results = {
+    calculatePerformance("FCFS", fcfsPatients),
+    calculatePerformance("SJF", sjfPatients),
+    calculatePerformance("Priority", priorityPatients),
+    calculatePerformance("Round Robin", rrPatients),
+    calculatePerformance("SRTF", srtfPatients)
+};
+
+int bestIndex = 0;
+double bestScore = 1e18;
+
+for (int i = 0; i < results.size(); i++)
+{
+    double score = results[i].avgWT
+                 + results[i].avgTAT
+                 + results[i].avgRT;
+
+    if (score < bestScore)
+    {
+        bestScore = score;
+        bestIndex = i;
+    }
+}
+
+cout << "\nAlgorithm Performance Scores:\n";
+
+for (const auto &r : results)
+{
+    double score = r.avgWT + r.avgTAT + r.avgRT;
+
+    cout << left << setw(15) << r.name
+         << "Score: " << fixed << setprecision(2)
+         << score << endl;
+}
+
+
+
+// Tie Detection
+
+vector<int> bestAlgorithms;
+
+for (int i = 0; i < results.size(); i++)
+{
+    double score = results[i].avgWT
+                 + results[i].avgTAT
+                 + results[i].avgRT;
+
+    if (score <= bestScore + 0.001)
+    {
+        bestAlgorithms.push_back(i);
+    }
+}
+
+cout << "\n------------------------------------------\n";
+
+if (bestAlgorithms.size() == 1)
+{
+    cout << "BEST SCHEDULING ALGORITHM: "
+         << results[bestAlgorithms[0]].name << endl;
+}
+else
+{
+    cout << "MULTIPLE BEST SCHEDULING ALGORITHMS:\n";
+
+    for (int index : bestAlgorithms)
+    {
+        cout << results[index].name << endl;
+    }
+}
+
+cout << "\nBEST ALGORITHM PERFORMANCE DETAILS\n";
+
+for (int index : bestAlgorithms)
+{
+    cout << "\nAlgorithm: " << results[index].name << endl;
+    cout << "Average WT: " << results[index].avgWT << endl;
+    cout << "Average TAT: " << results[index].avgTAT << endl;
+    cout << "Average RT: " << results[index].avgRT << endl;
+}
+
+cout << "------------------------------------------\n";
+
 return 0;
     return 0;
 }
